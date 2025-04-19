@@ -87,14 +87,14 @@ window.addEventListener('load', () => {
     }
   });
 
-caches.open('card-v1').then(cache => {
-  cache.keys().then(requests => {
-    console.log('Закешированные файлы:');
-    requests.forEach(request => {
-      console.log(request.url);
-    });
-  });
-});
+// caches.open('card-v2').then(cache => {
+//   cache.keys().then(requests => {
+//     console.log('Закешированные файлы:');
+//     requests.forEach(request => {
+//       console.log(request.url);
+//     });
+//   });
+// });
   window.addEventListener('online', () => {
     if (window.location.pathname.includes('/pwa-test/offline.html')) {
       window.location.href = '/';
