@@ -44,20 +44,23 @@ function showQR(type) {
     qrContainer.appendChild(qrBlock);
 }
 
+window.addEventListener('click', (event) => {
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
+});
+
 // Регистрация Service Worker для PWA
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/pwa-test/sw.js')  
-        .then(registration => {
-          console.log('ServiceWorker успешно зарегистрирован!');
-        })
-        .catch(err => {
-          console.error('Ошибка регистрации:', err);
-        });
+        navigator.serviceWorker.register('/check/sw.js')
+            .then(registration => {
+                console.log('ServiceWorker registration successful');
+            })
+            .catch(err => {
+                console.log('ServiceWorker registration failed: ', err);
+            });
     });
-  }
-
-else{
-   console.log('else');  
 }
+
 
