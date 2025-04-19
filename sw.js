@@ -13,16 +13,6 @@ const FILES = [
 ];
 
 self.addEventListener("install", e => {
-  e.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(FILES))
-      .catch(err => console.error("Cache addAll error:", err)) // Логирование ошибок
-  );
-  self.skipWaiting();
-});
-
-// Установка сервис-воркера
-self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(FILES)));
   self.skipWaiting();
 });
@@ -37,6 +27,6 @@ self.addEventListener("activate", e => {
 self.addEventListener("fetch", e => {
   e.respondWith(
     caches.match(e.request).then(r => r || fetch(e.request))
-      .catch(() => caches.match("/pwa-test/offline.html"))
+      .catch(() => caches.match("/offline.html"))
   );
 });
