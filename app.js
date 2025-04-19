@@ -44,11 +44,6 @@ function showQR(type) {
     qrContainer.appendChild(qrBlock);
 }
 
-window.addEventListener('click', (event) => {
-    if (event.target === modal) {
-        modal.style.display = 'none';
-    }
-});
 
 // Регистрация Service Worker для PWA
 if ('serviceWorker' in navigator) {
