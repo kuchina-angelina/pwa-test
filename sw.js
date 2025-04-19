@@ -1,6 +1,6 @@
 const CACHE_NAME = "card-v1";
 const FILES = [
-  "/pwa-test/",                 // Главная страница (автоматически загрузит index.html)
+  "/",                          // Главная страница (автоматически загрузит index.html)
   "/pwa-test/index.html",       // Явное указание index.html
   "/pwa-test/style.css",        // Стили
   "/pwa-test/app.js",           // Скрипт
