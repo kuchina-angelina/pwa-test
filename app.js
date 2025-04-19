@@ -46,17 +46,28 @@ function showQR(type) {
 
 
 // Регистрация Service Worker для PWA
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/pwa-test/sw.js')
-            .then(registration => {
-                console.log('ServiceWorker registration successful');
-            })
-            .catch(err => {
-                console.log('ServiceWorker registration failed: ', err);
-            });
-    });
-}
+// if ('serviceWorker' in navigator) {
+//     window.addEventListener('load', () => {
+//         navigator.serviceWorker.register('/pwa-test/sw.js')
+//             .then(registration => {
+//                 console.log('ServiceWorker registration successful');
+//             })
+//             .catch(err => {
+//                 console.log('ServiceWorker registration failed: ', err);
+//             });
+//     });
+// }
+
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker
+      .register("/pwa-test/sw.js")
+      .then(serviceWorker => {
+        console.log("Service Worker registered: ", serviceWorker);
+      })
+      .catch(error => {
+        console.error("Error registering the Service Worker: ", error);
+      });
+  }
 
 
 // Проверка соединения при загрузке
