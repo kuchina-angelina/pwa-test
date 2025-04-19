@@ -53,7 +53,7 @@ window.addEventListener('click', (event) => {
 // Регистрация Service Worker для PWA
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/check/sw.js')
+        navigator.serviceWorker.register('/pwa-test/sw.js')
             .then(registration => {
                 console.log('ServiceWorker registration successful');
             })
