@@ -12,41 +12,29 @@ const FILES = [
   "/pwa-test/images/vk.png"
 ];
 
-// 1. Жёсткое кэширование при установке
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(FILES))
+// Установка сервис-воркера
+self.addEventListener("install", e => {
+  e.waitUntil(
+    caches.open(CACHE_NAME).then(c => c.addAll(FILES))
   );
-  self.skipWaiting(); // Немедленная активация
+  self.skipWaiting(); // Сразу активировать новый воркер
 });
 
-// 2. Агрессивный перехват запросов
-self.addEventListener('fetch', event => {
-  // Для всех HTML-запросов
-  if (event.request.mode === 'navigate') {
-    event.respondWith(
-      fetch(event.request)
-        .catch(() => caches.match('/pwa-test/offline.html'))
-    );
-    return;
-  }
-
-  // Для остальных ресурсов
-  event.respondWith(
-    caches.match(event.request)
-      .then(cached => cached || fetch(event.request))
-  );
-});
-
-// 3. Очистка старых кэшей
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(keys => 
-      Promise.all(keys.map(key => 
-        key !== CACHE_NAME && caches.delete(key)
-      ))
+// Активация (очистка старого кэша)
+self.addEventListener("activate", e => {
+  e.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.map(k => k !== CACHE_NAME && caches.delete(k)))
     )
   );
-  self.clients.claim(); // Контроль всех вкладок
+  self.clients.claim();
 });
+
+// Обработка запросов от страницы
+self.addEventListener("fetch", e => {
+  e.respondWith(
+    caches.match(e.request) // Пытаемся найти файл в кэше
+      .then(r => r || fetch(e.request)) // Если нет — пробуем загрузить из интернета
+      .catch(() => caches.match("/offline.html")) // Если совсем не удалось — показать offline.html
+  );
+}); 
