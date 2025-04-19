@@ -1,4 +1,4 @@
-const CACHE_NAME = "card-v1";
+const CACHE_NAME = "card-v2";
 const FILES = [
   "/pwa-test/",                   
   "/pwa-test/index.html",
@@ -12,47 +12,41 @@ const FILES = [
   "/pwa-test/images/vk.png"
 ];
 
+// 1. Жёсткое кэширование при установке
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => cache.addAll(FILES))
-      .catch(err => console.error('Ошибка кэширования:', err))
   );
-  self.skipWaiting();  // Важно для немедленной активации
+  self.skipWaiting(); // Немедленная активация
 });
 
+// 2. Агрессивный перехват запросов
 self.addEventListener('fetch', event => {
-  // Особый обработчик для навигационных запросов
+  // Для всех HTML-запросов
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request)
         .catch(() => caches.match('/pwa-test/offline.html'))
     );
-  } else {
-    // Для остальных ресурсов
-    event.respondWith(
-      caches.match(event.request)
-        .then(response => response || fetch(event.request))
-        .catch(() => {
-          if (event.request.url.endsWith('.html')) {
-            return caches.match('/pwa-test/offline.html');
-          }
-        })
-    );
+    return;
   }
+
+  // Для остальных ресурсов
+  event.respondWith(
+    caches.match(event.request)
+      .then(cached => cached || fetch(event.request))
+  );
 });
 
+// 3. Очистка старых кэшей
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
+    caches.keys().then(keys => 
+      Promise.all(keys.map(key => 
+        key !== CACHE_NAME && caches.delete(key)
+      ))
+    )
   );
-  self.clients.claim();  // Важно для немедленного контроля страниц
+  self.clients.claim(); // Контроль всех вкладок
 });
